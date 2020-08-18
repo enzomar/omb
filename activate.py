@@ -36,7 +36,7 @@ def _parse_input():
 	# Create the parser and add arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-v", dest='version', help="Version to activate")
-	parser.add_argument("-a", dest='app', default="server", help="Application to activate", choices=['server','web'])
+	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web', 'all'])
 	parser.add_argument("-p", dest='phase', default='dev', help="Phase to activate into", choices=['dev','uat', 'prd'])
 	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")
 	parser.add_argument("-r", dest='restart', action='store_true', help="Attempt to restart the env")
@@ -48,20 +48,29 @@ def _parse_input():
 		global _logger
 		_logger.setLevel(logging.DEBUG)
 
-	return args.version, args.app, args.phase, args.restart, args.simulate
+	app = args.app
+	if args.app == 'all':
+		app = ['server', 'web']
 
 
+	return args.version, app, args.phase, args.restart, args.simulate
+
+
+def symlink(source, destination):
+	tmpLink = destination+"_temp"
+	os.symlink(source, tmpLink)
+	os.rename(tmpLink, destination)
 
 def validate(app, phase):
 	source = get_source(app, '')
-	_logger.info("Checking: {0}".format(source))
+	_logger.info("Checking source: {0}".format(source))
 	if not os.path.exists(source):
 		_logger.error("App or Version not correct")
 		return False
 
 	# ensure that the phase is available
 	destination = get_destination(phase, '')
-	_logger.info("Checking: {0}".format(destination))
+	_logger.info("Checking destination: {0}".format(destination))
 	if not os.path.exists(destination):
 		_logger.error("Phase or App not correct")
 		return False
@@ -78,8 +87,9 @@ def link(version, app, phase, simulate_flag):
 		return True
 
 	try: 
-		os.symlink(source, destination)
+		symlink(source, destination)
 	except OSError as e:
+		_logger.error("{0}".format(e))
 		return False
 	return True
 
@@ -93,6 +103,7 @@ def restart(phase, simulate_flag):
 		output = subprocess.check_output(cmd)
 		_logger.info(output)
 	except OSError as e:
+		_logger.error("{0}".format(e))
 		return False
 	return True
 
@@ -108,6 +119,13 @@ def find_latest_version(app, phase):
 	finally: 
 		return version
 
+
+
+def run_multi(version, app, phase, restart_flag, simulate_flag):
+	for a in app:
+		if not run(version, a, phase, restart_flag, simulate_flag):
+			return False
+	return True
 
 
 def run(version, app, phase, restart_flag, simulate_flag):
@@ -140,7 +158,15 @@ def run(version, app, phase, restart_flag, simulate_flag):
 
 if __name__ == '__main__':
 	version, app, phase, restart_flag, simulate= _parse_input()
-	if not run(version, app, phase, restart_flag, simulate):
+	_logger.info("--------------------------")
+	_logger.info("Version: {0}".format(version))
+	_logger.info("App: {0}".format(app))
+	_logger.info("Phase: {0}".format(phase))
+	_logger.info("Restart: {0}".format(restart_flag))
+	_logger.info("Simulate: {0}".format(simulate))
+	_logger.info("--------------------------")
+
+	if not run_multi(version, app, phase, restart_flag, simulate):
 		sys.exit(-1)
 	else:
 		_logger.info("Activation completed")

@@ -1,6 +1,6 @@
 FROM mongo:3.6
 # Setting up time zone
-ENV TZ=Asia/Shanghai
+ENV TZ=Europe/Amsterdam
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Setting up a working directory
 ENV WORKDIR /usr/local/work
