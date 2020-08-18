@@ -153,6 +153,8 @@ def run(version, app, phase, restart_flag, simulate_flag):
 	_logger.info("Link")
 	if not link(version, app, phase, simulate_flag):
 		return False
+		
+	return True
 
 
 
