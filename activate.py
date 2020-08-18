@@ -5,8 +5,26 @@ import sys, os
 import logging
 
 
-import common
+#global paths variables
+_base_path = os.path.realpath(os.path.dirname(__file__))
+_env_path = os.path.join(_base_path, 'env')
+_src_path = os.path.join(_base_path, 'src')
 
+
+def get_env_to_intall(phase):
+	return os.path.join(_base_path, '.env', phase)
+
+
+def get_source(app, version):
+	return os.path.join(_src_path, app, version)
+
+
+def get_destination(phase, app):
+	return os.path.join(_env_path, phase, 'app', app)
+
+
+def get_docker_compose(phase):
+	return os.path.join(_env_path, phase, 'container')
 
 
 #logging
@@ -35,14 +53,14 @@ def _parse_input():
 
 
 def validate(app, phase):
-	source = common.get_source(app, '')
+	source = get_source(app, '')
 	_logger.info("Checking: {0}".format(source))
 	if not os.path.exists(source):
 		_logger.error("App or Version not correct")
 		return False
 
 	# ensure that the phase is available
-	destination = common.get_destination(phase, '')
+	destination = get_destination(phase, '')
 	_logger.info("Checking: {0}".format(destination))
 	if not os.path.exists(destination):
 		_logger.error("Phase or App not correct")
@@ -53,8 +71,8 @@ def validate(app, phase):
 
 def link(version, app, phase, simulate_flag):
 	
-	source = common.get_source(app, version)
-	destination = common.get_destination(phase, app)
+	source = get_source(app, version)
+	destination = get_destination(phase, app)
 	
 	if simulate_flag:
 		return True
@@ -67,7 +85,7 @@ def link(version, app, phase, simulate_flag):
 
 
 def restart(phase, simulate_flag):
-	docker_phase_path = common.get_docker_compose(phase)
+	docker_phase_path = get_docker_compose(phase)
 	cmd = "docker-compose -p "+docker_phase_path+" restart"
 	if simulate_flag:
 		return True
@@ -82,7 +100,7 @@ def restart(phase, simulate_flag):
 def find_latest_version(app, phase):
 	version = None
 	try:
-		source = common.get_source(app, '')
+		source = get_source(app, '')
 		versions = os.listdir(source)
 		version = sorted(versions)[0]
 	except Exception as e:
