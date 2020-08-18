@@ -9,7 +9,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
     networks:
-      uat:
+      internal:
         ipv4_address: 10.1.0.2
   flask:
     build: ./docker-file/flask
@@ -21,7 +21,7 @@ services:
     environment:
       FLASK_ENV: uat
     networks:
-      uat:
+      internal:
         ipv4_address: 10.1.0.3
 
   nginx:
@@ -35,11 +35,11 @@ services:
       - "3000:80"
     restart: always
     networks:
-      uat:
+      internal:
         ipv4_address: 10.1.0.4
 
 networks:
-  uat:
+  internal:
     ipam:
       config:
-        - subnet: 10.1.0.1/24
+        - subnet: 10.1.0.1/16
