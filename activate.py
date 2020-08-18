@@ -3,6 +3,7 @@
 import argparse
 import sys, os
 import logging
+import subprocess
 
 
 #global paths variables
@@ -95,8 +96,7 @@ def link(version, app, phase, simulate_flag):
 
 
 def restart(phase, simulate_flag):
-	docker_phase_path = get_docker_compose(phase)
-	cmd = "docker-compose -p "+docker_phase_path+" restart"
+	cmd = " . restart.sh "+phase
 	if simulate_flag:
 		return True
 	try:
