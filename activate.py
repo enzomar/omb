@@ -99,6 +99,7 @@ def run(version, app, phase, restart_flag, simulate_flag):
 	if not version:
 		_logger.info("Find latest version")
 		version = find_latest_version(app, phase)
+		_logger.info("> {0}".format(version))
 	if not version:
 		return False
 

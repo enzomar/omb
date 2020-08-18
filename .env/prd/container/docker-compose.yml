@@ -1,4 +1,5 @@
 version: '2.2'
+container_name: prd
 services:
   mongo:
     build: ./docker-file/mongo

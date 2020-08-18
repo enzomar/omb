@@ -1,4 +1,5 @@
 version: '2.2'
+container_name: dev
 services:
   mongo:
     build: ./docker-file/mongo
