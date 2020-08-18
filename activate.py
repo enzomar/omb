@@ -126,6 +126,13 @@ def run_multi(version, app, phase, restart_flag, simulate_flag):
 	for a in app:
 		if not run(version, a, phase, restart_flag, simulate_flag):
 			return False
+	
+	# restart docker
+	if restart_flag:
+		_logger.info("Restart")
+		if not restart(phase, simulate_flag):
+			return False
+
 	return True
 
 
@@ -147,13 +154,6 @@ def run(version, app, phase, restart_flag, simulate_flag):
 	if not link(version, app, phase, simulate_flag):
 		return False
 
-
-	# restart docker
-	if restart_flag:
-		_logger.info("Restart")
-		if not restart(phase, simulate_flag):
-			return False
-	return True
 
 
 
