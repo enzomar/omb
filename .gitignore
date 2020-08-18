@@ -1,6 +1,5 @@
 venv
 *.pycenv
-src
 *.pyc
 __pycache__
-env
+.DS_Store
