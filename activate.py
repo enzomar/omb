@@ -96,13 +96,14 @@ def link(version, app, phase, simulate_flag):
 
 
 def restart(phase, simulate_flag):
-	cmd = "restart.sh "+phase
+	cmd = "sh restart.sh "+phase
 	if simulate_flag:
 		return True
 	try:
-		output = subprocess.check_output(cmd)
+		_logger.debug("{0}".format(cmd))
+		output = subprocess.check_output(cmd.split())
 		_logger.info(output)
-	except OSError as e:
+	except Exception as e:
 		_logger.error("{0}".format(e))
 		return False
 	return True
