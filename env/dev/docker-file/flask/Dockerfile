@@ -14,4 +14,4 @@ RUN pip3 install gunicorn
 RUN pip3 install pymongo
 
 # Start the application with gunicorn
-CMD gunicorn -w __GUNICORN_WORKERS__ -b 0.0.0.0:5000 app:app
+CMD gunicorn -w 1 -b 0.0.0.0:5000 app:app
