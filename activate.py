@@ -96,7 +96,7 @@ def link(version, app, phase, simulate_flag):
 
 
 def restart(phase, simulate_flag):
-	cmd = " . restart.sh "+phase
+	cmd = "restart.sh "+phase
 	if simulate_flag:
 		return True
 	try:
