@@ -67,8 +67,10 @@ def link(version, app, phase, simulate_flag):
 
 
 def restart(phase, simulate_flag):
-	common.get_docker_compose(phase)
-	cmd = "docker-compose -p "+docker_phase_path+"restart"
+	docker_phase_path = common.get_docker_compose(phase)
+	cmd = "docker-compose -p "+docker_phase_path+" restart"
+	if simulate_flag:
+		return True
 	try:
 		output = subprocess.check_output(cmd)
 		_logger.info(output)
@@ -119,8 +121,8 @@ def run(version, app, phase, restart_flag, simulate_flag):
 
 
 if __name__ == '__main__':
-	version, app, phase, restart, simulate= _parse_input()
-	if not run(version, app, phase, restart, simulate):
+	version, app, phase, restart_flag, simulate= _parse_input()
+	if not run(version, app, phase, restart_flag, simulate):
 		sys.exit(-1)
 	else:
 		_logger.info("Activation completed")
