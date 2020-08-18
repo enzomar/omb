@@ -1,0 +1,46 @@
+version: '2.2'
+services:
+  mongo:
+    build: ./docker-file/mongo
+    volumes:
+      - "../storage/mongodb:/data/db"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    networks:
+      prd:
+        ipv4_address: 10.5.0.2
+  flask:
+    build: ./docker-file/flask
+    links:
+      - mongo
+    volumes:
+      - ../app/server:/home/web
+      - ../storage/fs:/data/fs
+    environment:
+      FLASK_ENV: prd
+    networks:
+      prd:
+        ipv4_address: 10.5.0.3
+
+  nginx:
+    build: ./docker-file/nginx
+    links:
+      - flask
+    volumes:
+      - "../log/nginx:/var/log/nginx"
+      - "../app/web:/usr/share/nginx/html"
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    networks:
+      prd:
+        ipv4_address: 10.5.0.4
+
+networks:
+  prd:
+    ipam:
+      config:
+        - subnet: 10.5.0.1/24
