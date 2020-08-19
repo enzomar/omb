@@ -15,7 +15,6 @@ else:
 	app.config.from_object("config.LOCALConfig")
 
 
-
 def dummy_connect():
 	client = MongoClient(host = app.config["DB_HOST"]+":27017", 
 		username = os.getenv('MONGO_INITDB_ROOT_USERNAME'),
@@ -23,14 +22,13 @@ def dummy_connect():
 	return client
 
 
-
 @app.route('/')
 def hello():
 	m = sys.modules.keys()
-	client = dummy_connect()
+	#client = dummy_connect()
 	html  = "<p>{0}</p>".format(app.config["ENV"])
 	html  = "<p>{0}</p>".format(os.getcwd())
-	html += "<p>{0}</p>".format(client.server_info())
+	#html += "<p>{0}</p>".format(client.server_info())
 	html += "<p>{0}</p>".format(m)
 
 	return html
