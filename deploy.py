@@ -60,8 +60,6 @@ def run(version, source, app):
 	return True
 
 
-
-
 if __name__ == '__main__':
 	version, source, app = _parse_input()
 	_logger.info("--------------------------")

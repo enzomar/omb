@@ -34,7 +34,7 @@ def _parse_input():
 	# Create the parser and add arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-v", dest='version', help="Version to activate")
-	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web', 'all'])
+	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web'])
 	parser.add_argument("-p", dest='phase', default='dev', help="Phase to activate into", choices=['dev','uat', 'prd'])
 	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")
 	parser.add_argument("-r", dest='restart', action='store_true', help="Attempt to restart the env")
@@ -46,8 +46,8 @@ def _parse_input():
 		global _logger
 		_logger.setLevel(logging.DEBUG)
 
-	app = args.app
-	if args.app == 'all':
+	app = [args.app]
+	if 'all' in app:
 		app = ['server', 'web']
 
 
@@ -152,8 +152,6 @@ def run(version, app, phase, restart_flag, simulate_flag):
 		return False
 
 	return True
-
-
 
 
 if __name__ == '__main__':
