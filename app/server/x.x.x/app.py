@@ -25,10 +25,10 @@ def dummy_connect():
 @app.route('/')
 def hello():
 	m = sys.modules.keys()
-	#client = dummy_connect()
+	client = dummy_connect()
 	html  = "<p>{0}</p>".format(app.config["ENV"])
 	html  = "<p>{0}</p>".format(os.getcwd())
-	#html += "<p>{0}</p>".format(client.server_info())
+	html += "<p>{0}</p>".format(client.server_info())
 	html += "<p>{0}</p>".format(m)
 
 	return html
