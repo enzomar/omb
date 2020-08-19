@@ -13,7 +13,7 @@ RUN pip3 install gunicorn
 RUN pip3 install pymongo
 
 # Installing custom dependencies if any
-RUN if [[ -f "requirements.txt" ]; then pip3 install -r requirements.txt; fi 
+RUN if [ -f "requirements.txt" ]; then pip3 install -r requirements.txt; fi 
 
 # Start the application with gunicorn
 CMD gunicorn -w 4 -b 0.0.0.0:5000 app:app
