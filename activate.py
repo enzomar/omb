@@ -9,15 +9,12 @@ import subprocess
 #global paths variables
 _base_path = os.path.realpath(os.path.dirname(__file__))
 _env_path = os.path.join(_base_path, 'env')
-_src_path = os.path.join(_base_path, 'src')
+_app_path = os.path.join(_base_path, 'app')
 
-
-def get_env_to_intall(phase):
-	return os.path.join(_base_path, '.env', phase)
 
 
 def get_source(app, version):
-	return os.path.join(_src_path, app, version)
+	return os.path.join(_app_path, app, version)
 
 
 def get_destination(phase, app):
@@ -153,7 +150,7 @@ def run(version, app, phase, restart_flag, simulate_flag):
 	_logger.info("Link")
 	if not link(version, app, phase, simulate_flag):
 		return False
-		
+
 	return True
 
 
