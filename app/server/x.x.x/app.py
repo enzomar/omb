@@ -21,8 +21,8 @@ def dummy_connect():
 
 @app.route('/')
 def hello():
-
-    return "{0}: {1}".format(app.config["ENV"], dummy_connect())
+	m = help("modules")
+    return "{0}: {1} - {2}".format(app.config["ENV"], dummy_connect(), m)
 
 if __name__ == '__main__':
     app.run()
