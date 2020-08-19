@@ -1,4 +1,4 @@
-[
-{"server":"git@gitlab.com:tigtag/easycontainer/easycontainer-server.git"},
-{"web":"git@gitlab.com:tigtag/easycontainer/easycontainer-web.git"}
-]
+{ 
+"server":"git@gitlab.com:tigtag/easycontainer/easycontainer-server.git",
+"web":"git@gitlab.com:tigtag/easycontainer/easycontainer-web.git"
+}
