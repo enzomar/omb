@@ -5,7 +5,7 @@ The following repository will contian a set of commands and a tree structure to 
 # Folder structures
 
 ## ENV
-
+```sh
 phase
 	app
 	docker-file
@@ -16,15 +16,15 @@ phase
 	storage
 	   fs
 	   mongo
-
+```
 
 ## APP
-
+```sh
 web
    <version>
 sever
    <version>
-
+```
 
 # How to use it in brief
 ## DEV
