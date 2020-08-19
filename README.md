@@ -1,6 +1,31 @@
 # Darner
 The following repository will contian a set of commands and a tree structure to host a development, acceptance and production environment based on docker.
 
+
+# Folder structures
+
+## ENV
+
+phase
+	app
+	docker-file
+	   mongo
+	   flask
+	   nginx
+	log
+	storage
+	   fs
+	   mongo
+
+
+## APP
+
+web
+   <version>
+sever
+   <version>
+
+
 # How to use it in brief
 ## DEV
 ```sh {.line-numbers}
