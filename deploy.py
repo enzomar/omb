@@ -26,20 +26,14 @@ def _parse_input():
 	parser.add_argument("-a", dest='app', required=True, help="App", choices=['server','web'])
 	
 	args = parser.parse_args()
-
-	if not args.version:
-		version = "latest"
-	else:
-		version = args.version
-
 	source = _app_repo[args.app]
 
-	return version, source, args.app
+	return args.version, source, args.app
 
 
 
 def run(version, source, app):
-	destination = os.path.join('app',app, version)
+	destination = os.path.join('app',app)
 	_logger.info("Building destination path {0}".format(destination))
 
 	# validate input ( version, app, phase, process)
@@ -50,7 +44,7 @@ def run(version, source, app):
 	output = subprocess.check_output(cmd.split())
 	_logger.info(output)
 
-	if version != "latest":
+	if version:
 		cmd = "git checkout "+version
 		_logger.debug("{0}".format(cmd))
 		output = subprocess.check_output(cmd.split())
@@ -60,12 +54,11 @@ def run(version, source, app):
 
 
 if __name__ == '__main__':
-	version, source, app = _parse_input()
+	version, source, app= _parse_input()
 	_logger.info("--------------------------")
 	_logger.info("Version: {0}".format(version))
 	_logger.info("Source: {0}".format(source))
 	_logger.info("App: {0}".format(app))
-
 	_logger.info("--------------------------")
 
 	if not run(version, source, app):

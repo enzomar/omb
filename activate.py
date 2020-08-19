@@ -39,6 +39,7 @@ def _parse_input():
 	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")
 	parser.add_argument("-r", dest='restart', action='store_true', help="Attempt to restart the env")
 	parser.add_argument("-d", dest='debug', action='store_true', help="Debug log")
+	parser.add_argument("-l", dest='ls', action='store_true', help="List all avaiable version/app")
 
 	args = parser.parse_args()
 
@@ -51,7 +52,7 @@ def _parse_input():
 		app = ['server', 'web']
 
 
-	return args.version, app, args.phase, args.restart, args.simulate
+	return args.version, app, args.phase, args.restart, args.simulate, args.ls
 
 
 def symlink(source, destination):
@@ -59,8 +60,9 @@ def symlink(source, destination):
 	os.symlink(source, tmpLink)
 	os.rename(tmpLink, destination)
 
-def validate(app, phase):
-	source = get_source(app, '')
+
+def validate(app, phase, version):
+	source = get_source(app, version)
 	_logger.info("Checking source: {0}".format(source))
 	if not os.path.exists(source):
 		_logger.error("App or Version not correct")
@@ -106,22 +108,24 @@ def restart(phase, simulate_flag):
 	return True
 
 
-def find_latest_version(app, phase):
-	version = None
+
+
+def list_versions(app):
+	versions = []
 	try:
 		source = get_source(app, '')
 		versions = os.listdir(source)
-		version = sorted(versions)[0]
+		versions = sorted(versions)
 	except Exception as e:
 		_logger.error("{0}".format(e))
 	finally: 
-		return version
+		return versions
 
 
 
-def run_multi(version, app, phase, restart_flag, simulate_flag):
+def run_multi(version, app, phase, restart_flag, simulate_flag, ls):
 	for a in app:
-		if not run(version, a, phase, restart_flag, simulate_flag):
+		if not run(version, a, phase, restart_flag, simulate_flag, ls):
 			return False
 	
 	# restart docker
@@ -133,18 +137,32 @@ def run_multi(version, app, phase, restart_flag, simulate_flag):
 	return True
 
 
-def run(version, app, phase, restart_flag, simulate_flag):
-	# validate input ( version, app, phase, process)
-	_logger.info("Validate")
-	if not validate(app, phase):
-		return False
+def run(version, app, phase, restart_flag, simulate_flag, ls):
+	if ls:
+		for version in list_versions(app):
+			_logger.info("{0} - {1}".format(app, version))
+		return True
 
 	if not version:
 		_logger.info("Find latest version")
-		version = find_latest_version(app, phase)
+		version = list_versions(app)[0]
 		_logger.info("> {0}".format(version))
 	if not version:
 		return False
+
+	# validate input ( version, app, phase, process)
+	_logger.info("Validate")
+	if not validate(app, phase, version):
+		return False
+
+
+	if not version:
+		_logger.info("Find latest version")
+		version = list_versions(app)[0]
+		_logger.info("> {0}".format(version))
+	if not version:
+		return False
+
 
 	# link the version pf the app to the phase
 	_logger.info("Link")
@@ -155,19 +173,23 @@ def run(version, app, phase, restart_flag, simulate_flag):
 
 
 if __name__ == '__main__':
-	version, app, phase, restart_flag, simulate= _parse_input()
+	version, app, phase, restart_flag, simulate, ls= _parse_input()
 	_logger.info("--------------------------")
 	_logger.info("Version: {0}".format(version))
 	_logger.info("App: {0}".format(app))
 	_logger.info("Phase: {0}".format(phase))
 	_logger.info("Restart: {0}".format(restart_flag))
 	_logger.info("Simulate: {0}".format(simulate))
+	_logger.info("List: {0}".format(ls))
 	_logger.info("--------------------------")
 
-	if not run_multi(version, app, phase, restart_flag, simulate):
+	if not run_multi(version, app, phase, restart_flag, simulate, ls):
 		sys.exit(-1)
 	else:
-		_logger.info("Activation completed")
+		_logger.info("--------------------------")
+		_logger.info("Done")
+		_logger.info("--------------------------")
+
 
 
 
