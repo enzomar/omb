@@ -1,6 +1,19 @@
 # Darner
 The following repository contians a set of scripts and a tree structure to host a development, acceptance and production environment based on docker for web developments
 
+# How to use it in brief
+## DEV
+```sh {.line-numbers}
+git clone <this repo>
+python deploy.py
+python activate.py
+```
+## PRD / UAT
+```sh {.line-numbers}
+git clone <this repo>
+python deploy.py -a <APPLICATION> -v <VERSION> -p <PHASE>
+python activate.py -a <APPLICATION> -v <VERSION> -p <PHASE> -r
+```
 
 # Folder structures
 ```sh
@@ -94,16 +107,3 @@ By the dev
 Each time a new activation is agreed
 Fallback tin case of any issue.
 
-# How to use it in brief
-## DEV
-```sh {.line-numbers}
-git clone <this repo>
-python deploy.py
-python activate.py
-```
-## PRD / UAT
-```sh {.line-numbers}
-git clone <this repo>
-python deploy.py -a <APPLICATION> -v <VERSION> -p <PHASE>
-python activate.py -a <APPLICATION> -v <VERSION> -p <PHASE> -r
-```
