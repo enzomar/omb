@@ -27,7 +27,7 @@ def _parse_input():
 	
 	args = parser.parse_args()
 
-	if not args.version
+	if not args.version:
 		version = "latest"
 	else:
 		version = args.version
