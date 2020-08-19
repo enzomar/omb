@@ -38,7 +38,6 @@ def _parse_input():
 
 
 
-
 def run(version, source, app):
 	destination = os.path.join('app',app, version)
 	_logger.info("Building destination path {0}".format(destination))
