@@ -71,7 +71,7 @@ optional arguments:
 By a CD script.
 By the dev 
 ...
-### when to trigger it
+### When to trigger it
 Each time a new release is ready
 Redeployment tin case of any issue.
 
@@ -103,7 +103,7 @@ optional arguments:
 By a pipeline script.
 By the dev 
 ...
-### when to trigger it
+### When to trigger it
 Each time a new activation is agreed
 Fallback tin case of any issue.
 
