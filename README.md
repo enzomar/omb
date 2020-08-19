@@ -15,7 +15,7 @@ python deploy.py -a <APPLICATION> -v <VERSION> -p <PHASE>
 python activate.py -a <APPLICATION> -v <VERSION> -p <PHASE> -r
 ```
 
-# Folder structures
+# Specification
 ```sh
 ├── README.md
 ├── __pycache__
