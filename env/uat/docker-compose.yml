@@ -19,7 +19,7 @@ services:
       - ./app/server:/home/web
       - ./storage/fs:/data/fs
     environment:
-      FLASK_ENV: uat
+      ENV: uat
     networks:
       internal:
         ipv4_address: 10.1.0.3

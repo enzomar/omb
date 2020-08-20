@@ -21,7 +21,7 @@ services:
       - ./app/server:/home/web
       - ./storage/fs:/data/fs
     environment:
-      FLASK_ENV: dev
+      ENV: dev
     networks:
       dev:
         ipv4_address: 10.0.0.3
