@@ -4,7 +4,8 @@ import argparse
 import sys, os
 import logging
 import subprocess
-
+import random
+import string
 
 #global paths variables
 _base_path = os.path.realpath(os.path.dirname(__file__))
@@ -55,8 +56,15 @@ def _parse_input():
 	return args.version, app, args.phase, args.restart, args.simulate, args.ls
 
 
+
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
+
 def symlink(source, destination):
-	tmpLink = destination+"_temp"
+	tmpLink = destination+get_random_string(6)
 	os.symlink(source, tmpLink)
 	os.rename(tmpLink, destination)
 
