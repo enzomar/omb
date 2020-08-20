@@ -32,7 +32,7 @@ def hello():
 	html += '<p>Hello</p>'
 	html  += "<p>PHASE: {0}</p>".format(phase)
 	html  += "<p>CWD: {0}</p>".format(os.getcwd())
-	#html += "<p>MONGO: {0}</p>".format(client.server_info())
+	html += "<p>MONGO: {0}</p>".format(client.server_info())
 	html += "<p>MODULES: {0}</p>".format(m)
 	html += '</body></html>'
 
