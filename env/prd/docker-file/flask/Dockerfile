@@ -1,4 +1,5 @@
-FROM python:3.6
+FROM python:3.8-slim-buster
+
 # Setting up time zone
 ENV TZ=Europe/Amsterdam
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

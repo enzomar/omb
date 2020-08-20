@@ -20,7 +20,7 @@ services:
       - ./app/server:/home/web
       - ./storage/fs:/data/fs
     environment:
-      ENV: prd
+      FLASK_ENV: prd
     networks:
       internal:
         ipv4_address: 10.5.0.3
