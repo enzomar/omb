@@ -156,14 +156,6 @@ def run(version, app, phase, restart_flag, simulate_flag, ls):
 		return False
 
 
-	if not version:
-		_logger.info("Find latest version")
-		version = list_versions(app)[0]
-		_logger.info("> {0}".format(version))
-	if not version:
-		return False
-
-
 	# link the version pf the app to the phase
 	_logger.info("Link")
 	if not link(version, app, phase, simulate_flag):
