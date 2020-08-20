@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo "----- DEV ----------"
 docker-compose -f env/dev/docker-compose.yml ps
+./test dev
+echo "----- UAT ----------"
 docker-compose -f env/uat/docker-compose.yml ps
+./test uat
+echo "----- PRD ----------"
 docker-compose -f env/prd/docker-compose.yml ps
+./test prd
