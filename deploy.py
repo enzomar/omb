@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import sys, os
@@ -39,16 +39,21 @@ def run(version, source, app):
 	# validate input ( version, app, phase, process)
 	_logger.info("Fetching {0} from {1}".format(version, source))
 
-	cmd = "git clone "+source+ " "+ destination
-	_logger.debug("{0}".format(cmd))
-	output = subprocess.check_output(cmd.split())
-	_logger.info(output)
-
-	if version:
-		cmd = "git checkout "+version
+	new_version = not os.path.exists(destination)
+	if new_version:
+		cmd = "git clone "+source+ " "+ destination
 		_logger.debug("{0}".format(cmd))
 		output = subprocess.check_output(cmd.split())
 		_logger.info(output)
+
+	if version and not new_version:
+		cwd = os.getcwd()
+		os.chdir(cwd)
+		cmd = "git checkout "+ (version or '')
+		_logger.debug("{0}".format(cmd))
+		output = subprocess.check_output(cmd.split())
+		_logger.info(output)
+
 
 	return True
 
@@ -62,10 +67,15 @@ if __name__ == '__main__':
 	_logger.info("--------------------------")
 
 	if not run(version, source, app):
+		_logger.info("--------------------------")
 		_logger.info("Deploy failed")
+		_logger.info("--------------------------")
+
 		sys.exit(-1)
 	else:
+		_logger.info("--------------------------")
 		_logger.info("Deploy completed")
+		_logger.info("--------------------------")
 
 
 
