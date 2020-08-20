@@ -1,14 +1,5 @@
 #!/bin/bash
 
-phase=$1
-
-if [[ -z $1 ]]; then
-    phase=$(head -n 1 .phase 2> /dev/null)
-    if [[ -z $phase ]]; then
-    	phase='dev'
-    fi
-fi
-
-echo "PHASE:"$phase
-
-docker-compose -f env/$phase/docker-compose.yml ps
+docker-compose -f env/dev/docker-compose.yml ps
+docker-compose -f env/uat/docker-compose.yml ps
+docker-compose -f env/prd/docker-compose.yml ps
