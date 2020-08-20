@@ -11,6 +11,8 @@ services:
     networks:
       dev:
         ipv4_address: 10.0.0.2
+    ports:
+      - "27017:27017"
   flask:
     build: ./docker-file/flask
     links:
@@ -32,7 +34,7 @@ services:
       - "./log/nginx:/var/log/nginx"
       - "./app/web:/usr/share/nginx/html"
     ports:
-      - "3000:80"
+      - "8080:80"
     restart: always
     networks:
       dev:

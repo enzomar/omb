@@ -16,10 +16,7 @@ else:
 
 
 def dummy_connect():
-	uri = "mongodb://{0}:{1}@{2}:27017/".format(app.config["DB_HOST"], 
-		os.getenv('MONGO_INITDB_ROOT_USERNAME'), 
-		os.getenv('MONGO_INITDB_ROOT_PASSWORD'))
-	client = MongoClient(uri)
+	client = MongoClient(app.config["DB_HOST"], 27017)
 	return client
 
 
