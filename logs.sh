@@ -1,1 +1,0 @@
-docker-compose -f env/$1/docker-compose.yml logs
