@@ -1,4 +1,5 @@
 FROM python:3.8-slim-buster
+
 # Setting up time zone
 ENV TZ=Europe/Amsterdam
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -13,9 +14,9 @@ RUN pip3 install gunicorn
 RUN pip3 install SQLAlchemy
 RUN pip3 install pymysql
 
-# Installing custom dependencies if any
-RUN if [ -f "requirements.txt" ]; then pip3 install -r requirements.txt; fi 
-
+# Installing other wheels if any
+# Create if not exist DB tables
 # Start the application with gunicorn
-CMD gunicorn -w 1 -b 0.0.0.0:5000 app:app --access-logfile /var/log/flask/gunicorn-access.log --error-logfile /var/log/flask/gunicorn-error.log --log-level DEBUG
-
+COPY ./entrypoint.sh /
+COPY ./init_db.py /
+ENTRYPOINT ["sh", "/entrypoint.sh"]
