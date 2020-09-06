@@ -34,7 +34,9 @@ _logger.setLevel(logging.DEBUG)
 def _parse_input():
 	# Create the parser and add arguments
 	parser = argparse.ArgumentParser()
-	parser.add_argument("-v", dest='version', help="Version to activate")
+	group = parser.add_mutually_exclusive_group()
+	group.add_argument("-v", dest='version', help="Version to activate")
+	group.add_argument("-i", dest='src_path', help="Path where there is the source code, in this case -a option MUST be specified")
 	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web'])
 	parser.add_argument("-p", dest='phase', default='dev', help="Phase to activate into", choices=['dev','uat', 'prd'])
 	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")
@@ -49,11 +51,15 @@ def _parse_input():
 		_logger.setLevel(logging.DEBUG)
 
 	app = [args.app]
+	if args.src_path and 'all' in app:
+		parser.print_help()
+		sys.exit(-1)
+
 	if 'all' in app:
 		app = ['server', 'web']
 
 
-	return args.version, app, args.phase, args.restart, args.simulate, args.ls
+	return args.version, app, args.phase, args.restart, args.simulate, args.ls, args.src_path
 
 
 
@@ -86,9 +92,8 @@ def validate(app, phase, version):
 	return True
 
 
-def link(version, app, phase, simulate_flag):
-	
-	source = get_source(app, version)
+def link(source, app, phase, simulate_flag):
+		
 	destination = get_destination(phase, app)
 	
 	if simulate_flag:
@@ -131,9 +136,9 @@ def list_versions(app):
 
 
 
-def run_multi(version, app, phase, restart_flag, simulate_flag, ls):
+def run_multi(version, app, phase, restart_flag, simulate_flag, ls, src_path):
 	for a in app:
-		if not run(version, a, phase, restart_flag, simulate_flag, ls):
+		if not run(version, a, phase, restart_flag, simulate_flag, ls, src_path):
 			return False
 	
 	# restart docker
@@ -145,18 +150,21 @@ def run_multi(version, app, phase, restart_flag, simulate_flag, ls):
 	return True
 
 
-def run(version, app, phase, restart_flag, simulate_flag, ls):
+def run(version, app, phase, restart_flag, simulate_flag, ls, src_path):
 	if ls:
 		for version in list_versions(app):
 			_logger.info("{0} - {1}".format(app, version))
 		return True
 
-	if not version:
-		_logger.info("Find latest version")
-		version = list_versions(app)[0]
-		_logger.info("> {0}".format(version))
-	if not version:
-		return False
+	source = src_path
+	if not src_path:
+		if not version:
+			_logger.info("Finding latest version for [{0}]".format(app))
+			version = list_versions(app)[0]
+			_logger.info("=> {0}".format(version))
+		if not version:
+			return False
+		source = get_source(app, version)
 
 	# validate input ( version, app, phase, process)
 	_logger.info("Validate")
@@ -165,17 +173,19 @@ def run(version, app, phase, restart_flag, simulate_flag, ls):
 
 
 	# link the version pf the app to the phase
-	_logger.info("Link")
-	if not link(version, app, phase, simulate_flag):
+	_logger.info("Link source to destination")
+
+	if not link(source, app, phase, simulate_flag):
 		return False
 
 	return True
 
 
 if __name__ == '__main__':
-	version, app, phase, restart_flag, simulate, ls= _parse_input()
+	version, app, phase, restart_flag, simulate, ls, src_path= _parse_input()
 	_logger.info("--------------------------")
 	_logger.info("Version: {0}".format(version))
+	_logger.info("Source Path: {0}".format(src_path))
 	_logger.info("App: {0}".format(app))
 	_logger.info("Phase: {0}".format(phase))
 	_logger.info("Restart: {0}".format(restart_flag))
@@ -183,7 +193,7 @@ if __name__ == '__main__':
 	_logger.info("List: {0}".format(ls))
 	_logger.info("--------------------------")
 
-	if not run_multi(version, app, phase, restart_flag, simulate, ls):
+	if not run_multi(version, app, phase, restart_flag, simulate, ls, src_path):
 		sys.exit(-1)
 	else:
 		_logger.info("--------------------------")

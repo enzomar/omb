@@ -5,7 +5,8 @@ The following repository contians a set of scripts and a tree structure to host 
 ## DEV
 ```sh {.line-numbers}
 git clone <this repo>
-python deploy.py
+git clone remote-source-repository my-source-folder
+activate.py -i my-source-folder -a server
 python activate.py
 ```
 ## PRD / UAT

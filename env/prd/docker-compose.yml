@@ -17,6 +17,7 @@ services:
     links:
       - mongo
     volumes:
+      - ./log/flask:/var/log/flask
       - ./app/server:/home/web
       - ./storage/fs:/data/fs
     environment:

@@ -1,6 +1,5 @@
 from flask import Flask
 
-from sqlalchemy import create_engine
 
 import sys, os
 
@@ -23,23 +22,29 @@ else:
 
 
 def dummy_connect():
-	user = app.config['MYSQL_DATABASE_USER']
-	pwd = app.config['MYSQL_DATABASE_PASSWORD']
-	db_name = app.config['MYSQL_DATABASE_DB']
-	host = app.config['MYSQL_DATABASE_HOST']
-	connection_str = 'mysql+pymysql://{0}:{1}@{2}:3306/{3}'.format(user,pwd,host,db_name)
-	return create_engine(connection_str)		
+	try:
+		from sqlalchemy import create_engine
+		user = app.config['MYSQL_DATABASE_USER']
+		pwd = app.config['MYSQL_DATABASE_PASSWORD']
+		host = app.config['MYSQL_DATABASE_HOST']
+		db_name = app.config['MYSQL_DATABASE_DB']
+		connection_str = 'mysql+pymysql://{0}:{1}@{2}:3306/{3}'.format(user,pwd,host,db_name)
+		return create_engine(connection_str).table_names()		
+	except:
+		return 'Something went bad'
+
+	
 
 
 @app.route('/')
 def hello():
-	m = sys.modules.keys()
-	db_client = dummy_connect()
+	tables =  dummy_connect()
+	m = sys.modules.keys()	
 	html = '<html><body>'
 	html += '<p>Hello</p>'
 	html  += "<p>PHASE: {0}</p>".format(phase)
 	html  += "<p>CWD: {0}</p>".format(os.getcwd())
-	html += "<p>MONGO: {0}</p>".format(db_client.table_names())
+	html += "<p>MYSQL tables: {0}</p>".format(tables)
 	html += "<p>MODULES: {0}</p>".format(m)
 	html += '</body></html>'
 
@@ -47,5 +52,5 @@ def hello():
 	return html
 
 if __name__ == '__main__':
-	app.run()
+	app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=5000)
 

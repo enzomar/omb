@@ -1,8 +1,8 @@
 class Config(object):
     DEBUG = False
     TESTING = False
-    MYSQL_DATABASE_USER = 'user'
-    MYSQL_DATABASE_PASSWORD = 'user'
+    MYSQL_DATABASE_USER = 'webserver'
+    MYSQL_DATABASE_PASSWORD = 'webserver'
     MYSQL_DATABASE_DB = 'easycontainer'    
     
 

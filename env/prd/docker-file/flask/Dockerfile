@@ -17,4 +17,4 @@ RUN pip3 install pymongo
 RUN if [ -f "requirements.txt" ]; then pip3 install -r requirements.txt; fi 
 
 # Start the application with gunicorn
-CMD gunicorn -w 4 -b 0.0.0.0:5000 app:app
+CMD gunicorn -w 4 -b 0.0.0.0:5000 app:app --access-logfile /var/log/flask/gunicorn-access.log --error-logfile /var/log/flask/gunicorn-error.log --log-level DEBUG

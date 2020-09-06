@@ -9,7 +9,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
     networks:
-      dev:
+      internal:
         ipv4_address: 10.0.0.2
     ports:
       - "3306:3306" 
@@ -21,13 +21,16 @@ services:
     links:
       - mysql
     volumes:
+      - ./log/flask:/var/log/flask
       - ./app/server:/home/web
       - ./storage/fs:/data/fs
     environment:
-      FLASK_ENV: dev
+      FLASK_ENV: dev     
     networks:
-      dev:
+      internal:
         ipv4_address: 10.0.0.3
+    ports:
+      - "5050:5000"         
 
   nginx:
     build: ./docker-file/nginx
@@ -36,17 +39,15 @@ services:
     volumes:
       - "./log/nginx:/var/log/nginx"
       - "./app/web:/usr/share/nginx/html"
-      - "./cert:/etc/nginx/cert"
     ports:
       - "8080:80"
-      - "8083:443"
     restart: always
     networks:
-      dev:
+      internal:
         ipv4_address: 10.0.0.4
 
 networks:
-  dev:
+  internal:
     ipam:
       config:
         - subnet: 10.0.0.1/16
