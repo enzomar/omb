@@ -32,6 +32,7 @@ services:
     volumes:
       - "./log/nginx:/var/log/nginx"
       - "./app/web:/usr/share/nginx/html"
+      - "./cert:/etc/nginx/cert"      
     ports:
       - "80:80"
       - "443:443"

@@ -31,8 +31,10 @@ services:
     volumes:
       - "./log/nginx:/var/log/nginx"
       - "./app/web:/usr/share/nginx/html"
+      - "./cert:/etc/nginx/cert"       
     ports:
       - "3000:80"
+      - "3443:443"      
     restart: always
     networks:
       internal:

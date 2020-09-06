@@ -15,7 +15,7 @@ echo "Dummy test..."
 echo "PHASE:"$phase
 
 if [ $phase == "dev" ]; then
-curl -I 127.0.0.1:8080
+curl -I http://127.0.0.1:8080
 fi
 
 if [ $phase == "uat" ]; then

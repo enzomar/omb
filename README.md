@@ -55,7 +55,7 @@ sever
 ## deploy.py
 
 ### What is does
-the script fetch the source code from the master branch of a given repository and clones into a specific folder in the relative app. THE repo link is inside the .deploy file.
+The script fetches the source code from the master branch of a given repository and clones into a specific folder in the relative app. The repository links are specified inside the .deploy file.
 
 ```sh
 usage: deploy.py [-h] [-v VERSION] -a {server,web}
@@ -68,8 +68,8 @@ optional arguments:
 
 
 ### Who will trigger it
-By a CD script.
-By the dev 
+CD script
+devevlopers
 ...
 ### When to trigger it
 Each time a new release is ready
@@ -79,9 +79,9 @@ Redeployment tin case of any issue.
 ## activate.py
 
 ### What is does
-The script make the input version application available from the given enviroment to be run and used. 
-In order to ahciev eit a link is creted between the app folder and the env folder.
-Teh version to be activated MUST be deployed first.
+The script make the input version application available to the given enviroment to be run and used. 
+In order to achieve it a link is creted between the app folder and the env folder.
+The version to be activated MUST be deployed first.
 
 ```sh
 usage: activate.py [-h] [-v VERSION] [-a {server,web}] [-p {dev,uat,prd}] [-s]
@@ -100,8 +100,8 @@ optional arguments:
 
 
 ### Who will trigger it
-By a pipeline script.
-By the dev 
+CD script
+devevlopers 
 ...
 ### When to trigger it
 Each time a new activation is agreed

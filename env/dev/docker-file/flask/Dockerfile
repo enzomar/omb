@@ -10,7 +10,8 @@ WORKDIR /home/web
 # Installing default dependencies
 RUN pip3 install flask
 RUN pip3 install gunicorn
-RUN pip3 install pymongo
+RUN pip3 install SQLAlchemy
+RUN pip3 install pymysql
 
 # Installing custom dependencies if any
 RUN if [ -f "requirements.txt" ]; then pip3 install -r requirements.txt; fi 
