@@ -66,7 +66,10 @@ def get_random_string(length):
 
 def symlink(source, destination):
 	tmpLink = destination+get_random_string(6)
-	os.symlink(source, tmpLink)
+	_logger.info("temporary folder: {0}".format(tmpLink))
+	_logger.info("create sym link: {0} -> {1}".format(source, tmpLink ))
+	os.symlink(source, tmpLink)	
+	_logger.info("rename temporary folder: {0} -> {1}".format(tmpLink, destination ))
 	os.rename(tmpLink, destination)
 
 
