@@ -16,8 +16,6 @@ services:
 
   flask:
     build: ./docker-file/flask
-    links: 
-      - mysql
     depends_on:
       - mysql
       
