@@ -11,20 +11,6 @@ def parse_input():
 	return args.path
 
 
-def get_host():
-	phase = None
-	try:
-		phase = os.environ["FLASK_ENV"]
-	except:
-		pass
-
-	if phase == "prd":
-		return "10.5.0.2"
-	elif phase == "uat":
-		return "10.1.0.2"
-
-	return "10.2.0.2"
-
 
 def fetch_sql_scripts(path):
 	import os, glob

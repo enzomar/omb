@@ -54,9 +54,7 @@ def _parse_input():
 	if 'all' in app:
 		app = ['server', 'web']
 
-
 	return args.version, app, args.restart, args.simulate, args.ls, args.src_path
-
 
 
 
@@ -64,6 +62,7 @@ def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
+
 
 def symlink(source, destination):
 	tmpLink = destination+get_random_string(6)
@@ -103,7 +102,7 @@ def link(source, app,simulate_flag):
 
 
 def restart(simulate_flag):
-	cmd = "sh restart "+phase
+	cmd = "./restart "
 	if simulate_flag:
 		return True
 	try:
