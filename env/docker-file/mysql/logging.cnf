@@ -1,3 +1,7 @@
+[mysqld_safe]
+log_error=/var/log/mysql/mysql_error.log
+ 
+
 [mysqld]
 general_log=ON
 slow_query_log=ON

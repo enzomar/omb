@@ -1,0 +1,16 @@
+version: '3.0'
+services:
+  
+  mysql:    
+    ports:
+      - "3306:3306" 
+
+  flask:
+    environment:
+      FLASK_ENV: dev
+      GUN_WORKERS: 1    
+
+  nginx:    
+    ports:
+      - "8080:80"    
+

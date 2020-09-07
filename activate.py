@@ -18,12 +18,9 @@ def get_source(app, version):
 	return os.path.join(_app_path, app, version)
 
 
-def get_destination(phase, app):
-	return os.path.join(_env_path, phase, 'app', app)
+def get_destination(app):
+	return os.path.join(_env_path, 'app', app)
 
-
-def get_docker_compose(phase):
-	return os.path.join(_env_path, phase, 'container')
 
 
 #logging
@@ -37,8 +34,7 @@ def _parse_input():
 	group = parser.add_mutually_exclusive_group()
 	group.add_argument("-v", dest='version', help="Version to activate")
 	group.add_argument("-i", dest='src_path', help="Path where there is the source code, in this case -a option MUST be specified")
-	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web'])
-	parser.add_argument("-p", dest='phase', default='dev', help="Phase to activate into", choices=['dev','uat', 'prd'])
+	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web'])	
 	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")
 	parser.add_argument("-r", dest='restart', action='store_true', help="Attempt to restart the env")
 	parser.add_argument("-d", dest='debug', action='store_true', help="Debug log")
@@ -59,7 +55,7 @@ def _parse_input():
 		app = ['server', 'web']
 
 
-	return args.version, app, args.phase, args.restart, args.simulate, args.ls, args.src_path
+	return args.version, app, args.restart, args.simulate, args.ls, args.src_path
 
 
 
@@ -75,26 +71,25 @@ def symlink(source, destination):
 	os.rename(tmpLink, destination)
 
 
-def validate(app, phase, version):
+def validate(app, version):
 	source = get_source(app, version)
 	_logger.info("Checking source: {0}".format(source))
 	if not os.path.exists(source):
 		_logger.error("App or Version not correct")
 		return False
-
-	# ensure that the phase is available
-	destination = get_destination(phase, '')
+	
+	destination = get_destination('')
 	_logger.info("Checking destination: {0}".format(destination))
 	if not os.path.exists(destination):
-		_logger.error("Phase or App not correct")
+		_logger.error("App not correct")
 		return False
 
 	return True
 
 
-def link(source, app, phase, simulate_flag):
+def link(source, app,simulate_flag):
 		
-	destination = get_destination(phase, app)
+	destination = get_destination(app)
 	
 	if simulate_flag:
 		return True
@@ -107,7 +102,7 @@ def link(source, app, phase, simulate_flag):
 	return True
 
 
-def restart(phase, simulate_flag):
+def restart(simulate_flag):
 	cmd = "sh restart "+phase
 	if simulate_flag:
 		return True
@@ -136,21 +131,21 @@ def list_versions(app):
 
 
 
-def run_multi(version, app, phase, restart_flag, simulate_flag, ls, src_path):
+def run_multi(version, app, restart_flag, simulate_flag, ls, src_path):
 	for a in app:
-		if not run(version, a, phase, restart_flag, simulate_flag, ls, src_path):
+		if not run(version, a, restart_flag, simulate_flag, ls, src_path):
 			return False
 	
 	# restart docker
 	if restart_flag:
 		_logger.info("Restart")
-		if not restart(phase, simulate_flag):
+		if not restart(simulate_flag):
 			return False
 
 	return True
 
 
-def run(version, app, phase, restart_flag, simulate_flag, ls, src_path):
+def run(version, app, restart_flag, simulate_flag, ls, src_path):
 	if ls:
 		for version in list_versions(app):
 			_logger.info("{0} - {1}".format(app, version))
@@ -166,34 +161,33 @@ def run(version, app, phase, restart_flag, simulate_flag, ls, src_path):
 			return False
 		source = get_source(app, version)
 
-	# validate input ( version, app, phase, process)
+	# validate input ( version, app, process)
 	_logger.info("Validate")
-	if not validate(app, phase, version):
+	if not validate(app, version):
 		return False
 
 
-	# link the version pf the app to the phase
+	# link the the nes src to the live app
 	_logger.info("Link source to destination")
 
-	if not link(source, app, phase, simulate_flag):
+	if not link(source, app, simulate_flag):
 		return False
 
 	return True
 
 
 if __name__ == '__main__':
-	version, app, phase, restart_flag, simulate, ls, src_path= _parse_input()
+	version, app, restart_flag, simulate, ls, src_path= _parse_input()
 	_logger.info("--------------------------")
 	_logger.info("Version: {0}".format(version))
 	_logger.info("Source Path: {0}".format(src_path))
-	_logger.info("App: {0}".format(app))
-	_logger.info("Phase: {0}".format(phase))
+	_logger.info("App: {0}".format(app))	
 	_logger.info("Restart: {0}".format(restart_flag))
 	_logger.info("Simulate: {0}".format(simulate))
 	_logger.info("List: {0}".format(ls))
 	_logger.info("--------------------------")
 
-	if not run_multi(version, app, phase, restart_flag, simulate, ls, src_path):
+	if not run_multi(version, app, restart_flag, simulate, ls, src_path):
 		sys.exit(-1)
 	else:
 		_logger.info("--------------------------")

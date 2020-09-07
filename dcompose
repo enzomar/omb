@@ -1,0 +1,20 @@
+#!/bin/bash
+
+phase=$(head -n 1 .phase 2> /dev/null)
+if [[ -z $phase ]]; then
+    exit 1
+fi
+echo "PHASE:"$phase
+
+
+if [[ $phase = "dev" ]]; then    	
+	docker-compose -f env/docker-compose.yml -f env/docker-compose.override.yml $@
+	exit 0
+fi
+
+if [[ $phase = "prd" ]]; then    
+	docker-compose -f env/docker-compose.yml -f env/docker-compose.prd.yml $@
+	exit 0
+fi
+
+docker-compose $@

@@ -4,25 +4,31 @@ services:
   mysql:
     build: ./docker-file/mysql
     volumes:
-      - "./storage/mysql:/var/lib/mysql"
-      - "./log/mysql:/var/log/mysql"      
+      - "./storage/mysql:/var/lib/mysql"      
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: 123456       
-    ports:
-      - "3306:3306" 
+      MYSQL_ROOT_PASSWORD: 123456
+    healthcheck:
+      test: mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD && test '0' -eq $$(ps aux | awk '{print $$11}' | grep -c -e '^mysql$$') 
+      interval: 3s      
+      retries: 5      
 
   flask:
     build: ./docker-file/flask
-    links:
+    links: 
       - mysql
+    depends_on:
+      - mysql
+      
     volumes:
       - ./app/server:/home/web      
       - ./log/flask:/var/log/flask
       - ./storage/fs:/data/fs
     environment:
       FLASK_ENV: dev
+      GUN_WORKERS: 1
+
 
   nginx:
     build: ./docker-file/nginx
@@ -30,9 +36,7 @@ services:
       - flask
     volumes:
       - "./log/nginx:/var/log/nginx"
-      - "./app/web:/usr/share/nginx/html"
-      - "./cert:/etc/nginx/cert"      
-    ports:
-      - "8080:80"
+      - "./app/web:/usr/share/nginx/html:ro"
+      - "./cert:/etc/nginx/cert:ro"      
     restart: always
 

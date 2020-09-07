@@ -2,18 +2,19 @@
 The following repository contians a set of scripts and a tree structure to host a development, acceptance and production environment based on docker for web developments
 
 # How to use it in brief
-## DEV
+## DEV/UAT
 ```sh {.line-numbers}
 git clone <this repo>
 git clone remote-source-repository my-source-folder
 activate.py -i my-source-folder -a server
 python activate.py
 ```
-## PRD / UAT
+## PRD
 ```sh {.line-numbers}
 git clone <this repo>
-python deploy.py -a <APPLICATION> -v <VERSION> -p <PHASE>
-python activate.py -a <APPLICATION> -v <VERSION> -p <PHASE> -r
+conf prd
+python deploy.py -a <APPLICATION> -v <VERSION>
+python activate.py -a <APPLICATION> -v <VERSION> -r
 ```
 
 # Specification
@@ -32,7 +33,7 @@ python activate.py -a <APPLICATION> -v <VERSION> -p <PHASE> -r
 
 ## env
 ```sh
-<dev/uat/prd>
+env
 	app
 	docker-file
 	   mongo
@@ -91,8 +92,7 @@ usage: activate.py [-h] [-v VERSION] [-a {server,web}] [-p {dev,uat,prd}] [-s]
 optional arguments:
   -h, --help        show this help message and exit
   -v VERSION        Version to activate
-  -a {server,web}   Application to activate
-  -p {dev,uat,prd}  Phase to activate into
+  -a {server,web}   Application to activate  
   -s                Simulate the activation
   -r                Attempt to restart the env
   -d                Debug log
