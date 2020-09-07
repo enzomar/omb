@@ -1,5 +1,6 @@
 version: '3.0'
 services:
+  
   mysql:
     build: ./docker-file/mysql
     volumes:
@@ -8,10 +9,7 @@ services:
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
-    networks:
-      internal:
-        ipv4_address: 10.2.0.2
+      MYSQL_ROOT_PASSWORD: 123456       
     ports:
       - "3306:3306" 
 
@@ -23,12 +21,8 @@ services:
       - ./app/server:/home/web      
       - ./log/flask:/var/log/flask
       - ./storage/fs:/data/fs
-    
     environment:
       FLASK_ENV: dev
-    networks:
-      internal:
-        ipv4_address: 10.2.0.3
 
   nginx:
     build: ./docker-file/nginx
@@ -41,12 +35,4 @@ services:
     ports:
       - "8080:80"
     restart: always
-    networks:
-      internal:
-        ipv4_address: 10.2.0.4
 
-networks:
-  internal:
-    ipam:
-      config:
-        - subnet: 10.2.0.1/16
