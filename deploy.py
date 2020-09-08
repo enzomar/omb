@@ -33,7 +33,7 @@ def _parse_input():
 
 
 def run(version, source, app):
-	destination = os.path.join('app',app)
+	destination = os.path.join('src',app)
 	_logger.info("Building destination path {0}".format(destination))
 
 	# validate input ( version, app, phase, process)

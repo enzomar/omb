@@ -10,17 +10,37 @@ import string
 #global paths variables
 _base_path = os.path.realpath(os.path.dirname(__file__))
 _env_path = os.path.join(_base_path, 'env')
-_app_path = os.path.join(_base_path, 'app')
+_src_path = os.path.join(_base_path, 'src')
 
 
+
+def get_phase():
+	with open('.phase') as f_in:
+		return f_in.readline().strip()
+
+
+def get_bg_active():
+	bg = subprocess.check_output("tools/whoisactive.sh")
+	active = bg.strip()	
+	if "blue" in active:
+		return "blue"
+
+	if "green" in active:
+		return "green"
+
+def get_bg_future():
+	current = get_bg_active()
+	if current == "blue":
+		return "green"
+	else:
+		return "blue"
 
 def get_source(app, version):
-	return os.path.join(_app_path, app, version)
+	return os.path.join(_src_path, app, version)
 
 
 def get_destination(app):
-	return os.path.join(_env_path, 'app', app)
-
+	return os.path.join(_env_path, get_bg_future(), app)
 
 
 #logging
@@ -35,9 +55,8 @@ def _parse_input():
 	group.add_argument("-v", dest='version', help="Version to activate")
 	group.add_argument("-i", dest='src_path', help="Path where there is the source code, in this case -a option MUST be specified")
 	parser.add_argument("-a", dest='app', default="all", help="Application to activate", choices=['server','web'])	
-	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")
-	parser.add_argument("-r", dest='restart', action='store_true', help="Attempt to restart the env")
-	parser.add_argument("-d", dest='debug', action='store_true', help="Debug log")
+	parser.add_argument("-s", dest='simulate', action='store_true', help="Simulate the activation")	
+	parser.add_argument("-d", dest='debug', action='store_true', help="Debug log")	
 	parser.add_argument("-l", dest='ls', action='store_true', help="List all avaiable version/app")
 
 	args = parser.parse_args()
@@ -54,7 +73,7 @@ def _parse_input():
 	if 'all' in app:
 		app = ['server', 'web']
 
-	return args.version, app, args.restart, args.simulate, args.ls, args.src_path
+	return args.version, app, args.simulate, args.ls, args.src_path
 
 
 
@@ -104,20 +123,35 @@ def link(source, app,simulate_flag):
 	return True
 
 
-def restart(simulate_flag):
-	cmd = "./restart "
+def safe_exec(cmd, simulate_flag):
+	_logger.debug("{0}".format(cmd))
 	if simulate_flag:
 		return True
-	try:
-		_logger.debug("{0}".format(cmd))
+
+	try:		
 		output = subprocess.check_output(cmd.split())
 		_logger.info(output)
 	except Exception as e:
 		_logger.error("{0}".format(e))
 		return False
-	return True
+
+	return True		
 
 
+def restart_or_switch(simulate_flag):
+
+	phase = get_phase()
+	if phase == "dev":
+		_logger.info("Restarting")
+		if safe_exec("./dcompose stop", simulate_flag):
+			return safe_exec("./dcompose up -d --remove-orphans", simulate_flag)	
+
+	if phase == "prd":		
+		_logger.info("Blue <-> Green Switch")
+		return safe_exec("tools/switch.sh", simulate_flag)
+
+	return False
+	
 
 
 def list_versions(app):
@@ -133,21 +167,23 @@ def list_versions(app):
 
 
 
-def run_multi(version, app, restart_flag, simulate_flag, ls, src_path):
+def run_multi(version, app, simulate_flag, ls, src_path):
 	for a in app:
-		if not run(version, a, restart_flag, simulate_flag, ls, src_path):
+		if not run(version, a, simulate_flag, ls, src_path):
 			return False
+
+	if ls: 
+		return True
 	
-	# restart docker
-	if restart_flag:
-		_logger.info("Restart")
-		if not restart(simulate_flag):
-			return False
+
+	_logger.info("Restart or switch")
+	if not restart_or_switch(simulate_flag):
+		return False
 
 	return True
 
 
-def run(version, app, restart_flag, simulate_flag, ls, src_path):
+def run(version, app, simulate_flag, ls, src_path):
 	if ls:
 		for version in list_versions(app):
 			_logger.info("{0} - {1}".format(app, version))
@@ -178,18 +214,24 @@ def run(version, app, restart_flag, simulate_flag, ls, src_path):
 	return True
 
 
-if __name__ == '__main__':
-	version, app, restart_flag, simulate, ls, src_path= _parse_input()
+def check_env():
+	if not get_bg_active():		
+		_logger.error('Mmm.. something is wrong, please run ./init first')
+		sys.exit(-1)
+
+
+if __name__ == '__main__':	
+	version, app, simulate, ls, src_path= _parse_input()
 	_logger.info("--------------------------")
 	_logger.info("Version: {0}".format(version))
 	_logger.info("Source Path: {0}".format(src_path))
-	_logger.info("App: {0}".format(app))	
-	_logger.info("Restart: {0}".format(restart_flag))
+	_logger.info("App: {0}".format(app))		
 	_logger.info("Simulate: {0}".format(simulate))
 	_logger.info("List: {0}".format(ls))
 	_logger.info("--------------------------")
+	check_env()	
 
-	if not run_multi(version, app, restart_flag, simulate, ls, src_path):
+	if not run_multi(version, app, simulate, ls, src_path):
 		sys.exit(-1)
 	else:
 		_logger.info("--------------------------")

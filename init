@@ -1,0 +1,18 @@
+#!/bin/bash
+
+phase=$(head -n 1 .phase 2> /dev/null)
+if [ -z $phase ]; then
+    exit 1
+fi
+echo "PHASE:"$phase
+
+
+if [ $phase = "prd" ]; then 
+	docker-compose -p=env -f env/docker-compose.env.yml down
+	docker-compose -p=env -f env/docker-compose.env.yml build
+	docker-compose -p=env -f env/docker-compose.env.yml up -d --remove-orphans
+fi
+
+./dcompose down
+./dcompose build
+./dcompose up -d --remove-orphans

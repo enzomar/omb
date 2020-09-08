@@ -13,13 +13,13 @@ try:
 	phase = os.environ["FLASK_ENV"]
 except:
 	phase = None
-
 if phase == "prd":
 	app.config.from_object(config.PRDConfig)
-elif phase == "dev":
-	app.config.from_object(config.LOCALConfig)
+elif phase == "uat":
+	app.config.from_object(config.UATConfig)
 else:
-	app.config.from_object(config.Config)
+	app.config.from_object(config.LOCALConfig)
+
 
 def dummy_connect():
 	try:
@@ -41,15 +41,16 @@ def hello():
 	tables =  dummy_connect()
 	m = sys.modules.keys()	
 	html = '<html><body>'
-	html += '<p>ta daa</p>'
+	html += '<p>Hello from 10.0.0</p>'
 	html  += "<p>PHASE: {0}</p>".format(phase)
 	html  += "<p>CWD: {0}</p>".format(os.getcwd())
 	html += "<p>MYSQL tables: {0}</p>".format(tables)
 	html += "<p>MODULES: {0}</p>".format(m)
 	html += '</body></html>'
 
+
 	return html
 
-if __name__ == '__main__':	
+if __name__ == '__main__':
 	app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=5000)
 

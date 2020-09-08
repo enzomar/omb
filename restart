@@ -1,6 +1,0 @@
-#!/bin/bash
-
-./dcompose stop
-./dcompose build
-./dcompose up -d
-./dcompose ps

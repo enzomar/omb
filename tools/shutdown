@@ -1,0 +1,22 @@
+#!/bin/bash
+
+phase=$(head -n 1 .phase 2> /dev/null)
+if [ -z $phase ]; then
+    exit 1
+fi
+echo "PHASE:"$phase
+
+
+
+
+if [ $phase = "prd" ]; then 
+	# read -p "You are going to teminate all the container. Are you sure? [y|n]" -n 1 -r
+	echo    # (optional) move to a new line
+	if [[ $REPLY =~ ^[Yy]$ ]]; then    	
+		docker-compose -f env/docker-compose.env.yml stop
+		./dcompose stop
+		exit 0
+	fi
+fi
+
+./dcompose stop
