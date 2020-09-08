@@ -1,2 +1,0 @@
-172.29.0.1 - - [08/Sep/2020:17:34:33 +0200] "GET / HTTP/1.1" 200 2665 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" "-"
-172.29.0.1 - - [08/Sep/2020:17:34:34 +0200] "GET /favicon.ico HTTP/1.1" 404 232 "http://127.0.0.1:8080/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36" "-"
