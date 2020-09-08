@@ -1,22 +1,28 @@
-# Darner
-The following repository contians a set of scripts and a tree structure to host a development, acceptance and production environment based on docker for web developments
+# O.M.B One Machine Band
+The following repository contians a set of scripts and a tree structure to host a development, acceptance and production environment based on docker for web developments.
+The Production phase is capable of blue-green deploy.
+
+
+![architecture](docs/architecture.png)
+
+
 
 # How to use it in brief
 ## Development / testing
 ```sh {.line-numbers}
 git clone <this-repo>
-./set-env dev
-./init
+./set_phase dev|uat
 git clone remote-source-repository my-source-server-folder
 git clone remote-source-repository my-source-web-folder
 python activate.py -i my-source-server-folder -a server
 python activate.py -i my-source-web-folder -a web
-curl -LI 127.0.0.1:8000 -s
+curl -LI 127.0.0.1:8000 -s (dev)
+curl -LI 127.0.0.1:3000 -s (uat)
 ```
 ## Production
 ```sh {.line-numbers}
 git clone <this repo>
-./set-env prd
+./set_phase prd
 ./init
 vim .deploy #edit eventually the repository link with source code for server and web
 python deploy.py -a <APPLICATION> -v <VERSION>
@@ -28,28 +34,31 @@ curl -LI 127.0.0.1 -s
 # Specification
 Folder tree
 ```sh
-├── activate.py
-├── connect
-├── dcompose
-├── deploy.py
+├── activate.py                  <-- used in dev, uat, prd
+├── connect                      <-- used in dev, uat, prd
+├── dcompose                     <-- used in dev, uat, prd
+├── deploy.py                    <-- used in uat, prd
 ├── env
-  ├── blue
-  ├── cert
-  ├── docker-compose.blue.yml
-  ├── docker-compose.env.yml
-  ├── docker-compose.green.yml
-  ├── docker-compose.yml
-  ├── docker-file
-  ├── green
-  └── traefik.toml
-├── init
+  ├── blue                       <-- used in prd
+  ├── cert                       <-- used in uat, prd
+  ├── docker-compose.blue.yml    <-- used in prd
+  ├── docker-compose.env.yml     <-- used in prd
+  ├── docker-compose.green.yml   <-- used in prd
+  ├── docker-compose.uat.yml     <-- used in uat
+  ├── docker-compose.yml         <-- used in dev
+  ├── docker-file                <-- used in dev, uat, prd
+  ├── green                      <-- used in prd
+  ├── trafeik.toml               <-- used in dev, uat
+  └── white                      <-- used in dev, uat
+├── init                         <-- used in prd
 ├── README.md
-├── set-env
-├── src
-├── stop
-├── storage
-├── tools
-└── up
+├── set_phase                    <-- used in dev, uat, prd
+├── src                          <-- used in [dev], uat, prd
+├── state                        <-- used in dev, uat, prd
+├── stop                         <-- used in dev, uat, [prd]
+├── storage                      <-- used in dev, uat, prd
+├── tools                        <-- used in dev, uat, prd
+└── up                           <-- used in dev, uat, prd
 
 ```
 
