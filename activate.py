@@ -39,8 +39,11 @@ def get_source(app, version):
 	return os.path.join(_src_path, app, version)
 
 
-def get_destination(app):
-	return os.path.join(_env_path, get_bg_future(), app)
+def get_destination(app):	
+	env = get_bg_active()
+	if get_phase() == 'prd':
+		env = get_bg_future()
+	return os.path.join(_env_path, env, app)
 
 
 #logging
@@ -73,7 +76,11 @@ def _parse_input():
 	if 'all' in app:
 		app = ['server', 'web']
 
-	return args.version, app, args.simulate, args.ls, args.src_path
+	version = args.version
+	if args.src_path:
+		version=''
+
+	return version, app, args.simulate, args.ls, args.src_path
 
 
 
@@ -87,7 +94,12 @@ def symlink(source, destination):
 	tmpLink = destination+get_random_string(6)
 	_logger.info("temporary folder: {0}".format(tmpLink))
 	_logger.info("create sym link: {0} -> {1}".format(source, tmpLink ))
-	os.symlink(source, tmpLink)	
+	os.symlink(source, tmpLink)		
+	import shutil	
+	try:
+		shutil.rmtree(destination)
+	except:
+		pass
 	_logger.info("rename temporary folder: {0} -> {1}".format(tmpLink, destination ))
 	os.rename(tmpLink, destination)
 
@@ -183,13 +195,14 @@ def run_multi(version, app, simulate_flag, ls, src_path):
 	return True
 
 
+
 def run(version, app, simulate_flag, ls, src_path):
 	if ls:
 		for version in list_versions(app):
 			_logger.info("{0} - {1}".format(app, version))
 		return True
 
-	source = src_path
+	source = os.path.abspath(src_path)
 	if not src_path:
 		if not version:
 			_logger.info("Finding latest version for [{0}]".format(app))
