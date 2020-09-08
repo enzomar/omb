@@ -23,7 +23,6 @@ services:
     restart: always
     ports:
       - "8000:8000"    
-      - "8443:443"    
 
 
   mysql:
