@@ -2,8 +2,7 @@ version: '3.0'
 services:
      
   flask:
-    build: ./docker-file/flask
-      
+    build: ./docker-file/flask    
     volumes:
       - ./blue/server:/home/web      
       - ./blue/log/flask:/var/log/flask

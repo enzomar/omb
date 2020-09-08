@@ -1,0 +1,10 @@
+#!/bin/bash
+
+in_phase=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+
+if [[ $in_phase = "prd" ]] || [[ $in_phase = "dev" ]] || [[ $in_phase = "uat" ]]; then    
+	echo $in_phase > .phase
+else	
+    echo "Input not valid! Please type: ${0##*/} {dev|uat|prd}"
+fi
+

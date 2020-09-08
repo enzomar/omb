@@ -7,10 +7,17 @@ fi
 echo "PHASE:"$phase
 
 
+if [ $phase = "uat" ]; then 
+	docker-compose -p=uat -f env/docker-compose.env.yml down
+	docker-compose -p=uat -f env/docker-compose.env.yml build
+	docker-compose -p=uat -f env/docker-compose.env.yml up -d --remove-orphans
+fi
+
+
 if [ $phase = "prd" ]; then 
-	docker-compose -p=env -f env/docker-compose.env.yml down
-	docker-compose -p=env -f env/docker-compose.env.yml build
-	docker-compose -p=env -f env/docker-compose.env.yml up -d --remove-orphans
+	docker-compose -p=prd -f env/docker-compose.env.yml down
+	docker-compose -p=prd -f env/docker-compose.env.yml build
+	docker-compose -p=prd -f env/docker-compose.env.yml up -d --remove-orphans
 fi
 
 ./dcompose down

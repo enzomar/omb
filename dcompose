@@ -1,14 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 
-phase=$(head -n 1 .phase 2> /dev/null)
-if [ -z $phase ]; then
-    exit 1
-fi
+phase=$(sh tools/get_phase.sh)
 echo "PHASE:"$phase
 
 
 if [ $phase = "dev" ]; then    	
-	docker-compose -p=blue -f env/docker-compose.yml $@
+	docker-compose -p=dev -f env/docker-compose.yml $@
+	exit 0
+fi
+
+if [ $phase = "uat" ]; then    		
+	docker-compose -p=uat -f env/docker-compose.uat.yml $@
 	exit 0
 fi
 

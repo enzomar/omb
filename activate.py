@@ -152,15 +152,16 @@ def safe_exec(cmd, simulate_flag):
 
 def restart_or_switch(simulate_flag):
 
-	phase = get_phase()
-	if phase == "dev":
+	phase = get_phase()	
+		
+	if phase == "prd":		
+		_logger.info("Blue <-> Green Switch")
+		return safe_exec("tools/switch.sh", simulate_flag)
+	else:
 		_logger.info("Restarting")
 		if safe_exec("./dcompose stop", simulate_flag):
 			return safe_exec("./dcompose up -d --remove-orphans", simulate_flag)	
 
-	if phase == "prd":		
-		_logger.info("Blue <-> Green Switch")
-		return safe_exec("tools/switch.sh", simulate_flag)
 
 	return False
 	
