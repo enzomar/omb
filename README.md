@@ -2,60 +2,73 @@
 The following repository contians a set of scripts and a tree structure to host a development, acceptance and production environment based on docker for web developments
 
 # How to use it in brief
-## DEV/UAT
+## Development / testing
 ```sh {.line-numbers}
-git clone <this repo>
-git clone remote-source-repository my-source-folder
-activate.py -i my-source-folder -a server
-python activate.py
+git clone <this-repo>
+./set-env dev
+./init
+git clone remote-source-repository my-source-server-folder
+git clone remote-source-repository my-source-web-folder
+python activate.py -i my-source-server-folder -a server
+python activate.py -i my-source-web-folder -a web
+curl -LI 127.0.0.1:8000 -s
 ```
-## PRD
+## Production
 ```sh {.line-numbers}
 git clone <this repo>
-conf prd
+./set-env prd
+./init
+vim .deploy #edit eventually the repository link with source code for server and web
 python deploy.py -a <APPLICATION> -v <VERSION>
-python activate.py -a <APPLICATION> -v <VERSION> -r
+python activate.py -a <APPLICATION> -v <VERSION> 
+curl -LI 127.0.0.1 -s
+
 ```
 
 # Specification
+Folder tree
 ```sh
-├── README.md
-├── __pycache__
 ├── activate.py
-├── app
+├── connect
+├── dcompose
 ├── deploy.py
 ├── env
-├── restart.sh
-├── stop.sh
-└── up.sh
+  ├── blue
+  ├── cert
+  ├── docker-compose.blue.yml
+  ├── docker-compose.env.yml
+  ├── docker-compose.green.yml
+  ├── docker-compose.yml
+  ├── docker-file
+  ├── green
+  └── traefik.toml
+├── init
+├── README.md
+├── set-env
+├── src
+├── stop
+├── storage
+├── tools
+└── up
+
 ```
 
+## ./init
+### What is does
+Is the the first script to be run the first time the ene.
+It will take care to perfrom a first start of the environment
 
-## env
 ```sh
-env
-	app
-	docker-file
-	   mongo
-	   flask
-	   nginx
-	log
-	storage
-	   fs
-	   mongo
+\.init
 ```
 
+## ./init
+### What is does
+It is the first script to be run the first time the ene.
+It will take care to perfrom a first start of the environment
 
-## app
-```sh
-web
-   <version>
-sever
-   <version>
-```
 
 ## deploy.py
-
 ### What is does
 The script fetches the source code from the master branch of a given repository and clones into a specific folder in the relative app. The repository links are specified inside the .deploy file.
 
@@ -84,6 +97,7 @@ Redeployment tin case of any issue.
 The script make the input version application available to the given enviroment to be run and used. 
 In order to achieve it a link is creted between the app folder and the env folder.
 The version to be activated MUST be deployed first.
+It will automatically fetch the env phase ( dev or prd) and wil restart or trigger the blew-green deployment flow.
 
 ```sh
 usage: activate.py [-h] [-v VERSION] [-a {server,web}] [-p {dev,uat,prd}] [-s]
