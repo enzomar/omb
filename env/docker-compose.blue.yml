@@ -35,6 +35,6 @@ services:
 networks:
     env:
         external:
-            name: env_webgateway              
+            name: prd_webgateway              
 
     

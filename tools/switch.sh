@@ -1,8 +1,9 @@
 #!/bin/sh
 
-p=$(sh get_phase.sh)
-if [ $phase = "prd" ]; then 
-
+swd=$(dirname "$0")
+phase=$(sh ${swd}/get_phase.sh)
+if [ $phase = "prd" ]
+then 
 	swd=$(dirname "$0")
 
 	blues=$(docker ps -f name=blue -q)

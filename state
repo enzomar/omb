@@ -1,0 +1,3 @@
+#!/bin/sh
+
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.Status}}\t{{.Networks}}\t{{.Ports}}"     

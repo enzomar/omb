@@ -4,8 +4,8 @@ services:
   flask:
     build: ./docker-file/flask    
     volumes:
-      - ./blue/server:/home/web      
-      - ./blue/log/flask:/var/log/flask
+      - ./white/server:/home/web      
+      - ./white/log/flask:/var/log/flask
       - ../storage/fs:/data/fs
     environment:
       FLASK_ENV: dev      
@@ -18,8 +18,8 @@ services:
   nginx:
     build: ./docker-file/nginx
     volumes:
-      - "./blue/log/nginx:/var/log/nginx"
-      - "./blue/web:/usr/share/nginx/html:ro"      
+      - "./white/log/nginx:/var/log/nginx"
+      - "./white/web:/usr/share/nginx/html:ro"      
     restart: always
     ports:
       - "8000:8000"    

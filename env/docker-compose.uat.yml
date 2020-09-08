@@ -4,15 +4,15 @@ services:
   flask:
     build: ./docker-file/flask
     volumes:
-      - ./blue/server:/home/web      
-      - ./blue/log/flask:/var/log/flask
+      - ./white/server:/home/web      
+      - ./white/log/flask:/var/log/flask
       - ../storage/fs:/data/fs
     environment:
       FLASK_ENV: uat
       FLASK_DEBUG: 0            
       GUN_WORKERS: 2     
     networks:
-      - env
+      - webgateway
 
 
   nginx:
@@ -26,16 +26,45 @@ services:
       - "traefik.frontend.rule=Method:CONNECT,DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,TRACE"
       - "traefik.port=8000"
     volumes:      
-      - "./blue/web:/usr/share/nginx/html:ro"      
+      - "./white/web:/usr/share/nginx/html:ro"      
     restart: always     
     links:
       - flask 
     networks:
-      - env          
+      - webgateway          
+
+  proxy:
+    image: traefik:v1.7
+    networks:
+        - webgateway
+    ports:
+        - "3000:80"
+        - "3030:8080"
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./traefik.toml:/traefik.toml:ro
+    networks:
+      - webgateway          
+
+
+  mysql:
+    build: ./docker-file/mysql
+    volumes:
+      - "../storage/mysql:/var/lib/mysql"      
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    healthcheck:
+      test: mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD && test '0' -eq $$(ps aux | awk '{print $$11}' | grep -c -e '^mysql$$') 
+      interval: 3s      
+      retries: 5  
+    networks:
+      - webgateway  
 
 networks:
-    env:
-        external:
-            name: env_webgateway              
+    webgateway:
+        driver: bridge  
+
 
     

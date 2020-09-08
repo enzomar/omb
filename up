@@ -1,3 +1,4 @@
 #!/bin/bash
 
 ./dcompose up -d --remove-orphans
+./state

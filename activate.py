@@ -40,9 +40,10 @@ def get_source(app, version):
 
 
 def get_destination(app):	
-	env = get_bg_active()
+	env = 'white'
 	if get_phase() == 'prd':
 		env = get_bg_future()
+
 	return os.path.join(_env_path, env, app)
 
 
@@ -190,7 +191,11 @@ def run_multi(version, app, simulate_flag, ls, src_path):
 	
 
 	_logger.info("Restart or switch")
-	if not restart_or_switch(simulate_flag):
+	try:
+		if not restart_or_switch(simulate_flag):
+			return False
+	except Exception as e:
+		_logger.error("{0}".format(e))
 		return False
 
 	return True
@@ -203,7 +208,7 @@ def run(version, app, simulate_flag, ls, src_path):
 			_logger.info("{0} - {1}".format(app, version))
 		return True
 
-	source = os.path.abspath(src_path)
+	
 	if not src_path:
 		if not version:
 			_logger.info("Finding latest version for [{0}]".format(app))
@@ -212,6 +217,8 @@ def run(version, app, simulate_flag, ls, src_path):
 		if not version:
 			return False
 		source = get_source(app, version)
+	else:
+		source = os.path.abspath(src_path)
 
 	# validate input ( version, app, process)
 	_logger.info("Validate")
@@ -229,9 +236,10 @@ def run(version, app, simulate_flag, ls, src_path):
 
 
 def check_env():
-	if not get_bg_active():		
-		_logger.error('Mmm.. something is wrong, please run ./init first')
-		sys.exit(-1)
+	if get_phase() == 'prd':
+		if not get_bg_active():		
+			_logger.error('Mmm.. something is wrong, please run ./init first')
+			sys.exit(-1)
 
 
 if __name__ == '__main__':	
@@ -248,6 +256,7 @@ if __name__ == '__main__':
 	if not run_multi(version, app, simulate, ls, src_path):
 		sys.exit(-1)
 	else:
+		safe_exec("sh state", False)
 		_logger.info("--------------------------")
 		_logger.info("Done")
 		_logger.info("--------------------------")
