@@ -11,7 +11,7 @@ services:
       FLASK_ENV: prd            
       GUN_WORKERS: 4     
     networks:
-      - env
+      - prd
 
 
   nginx:
@@ -30,11 +30,11 @@ services:
     depends_on:
       - flask 
     networks:
-      - env          
+      - prd          
 
 networks:
-    env:
-        external:
-            name: prd_webgateway              
+    prd:
+      external:
+          name: prd_webgateway              
 
     
