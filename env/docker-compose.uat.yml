@@ -16,7 +16,7 @@ services:
     networks:
       - webgateway 
     ports:
-      - "3303:3306" 
+      - "3306:3306" 
 
   flask:
     build: ./docker-file/flask
@@ -42,7 +42,7 @@ services:
       - "traefik.backend.healthcheck.path=/health"
       - "traefik.backend.healthcheck.interval=5s"
       - "traefik.http.middlewares.test-retry.retry.attempts=5"
-      - "traefik.frontend.rule=Method:CONNECT,DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,TRACE"
+      - "traefik.frontend.rule=PathPrefix:/"
       - "traefik.port=8000"
     volumes:      
       - "./white/web:/var/www:ro"      
