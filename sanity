@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+function run_all {
+	echo "$1 > setup ..."
+	./set_phase $1 > /dev/null 2>&1
+	echo "$1 > initializing ..."
+	./init > /dev/null 2>&1
+	echo "$1 > first activation ..."
+	python activate.py > /dev/null 2>&1
+	./up > /dev/null 2>&1
+	./check_connection
+	echo "$1 > second activation ..."
+	python activate.py > /dev/null 2>&1
+	./check_connection
+	echo "$1 > tear down ..."
+	./stop > /dev/null 2>&1
+}
+
+run_all dev
+run_all uat
+run_all prd

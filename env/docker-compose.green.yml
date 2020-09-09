@@ -25,7 +25,7 @@ services:
       - "traefik.frontend.rule=Method:CONNECT,DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT,TRACE"
       - "traefik.port=8000"
     volumes:      
-      - "./green/web:/usr/share/nginx/html:ro"      
+      - "./green/web:/var/www:ro"      
     restart: always     
     depends_on:
       - flask 

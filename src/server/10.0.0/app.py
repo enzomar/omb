@@ -35,7 +35,6 @@ def dummy_connect():
 
 	
 
-
 @app.route('/')
 def hello():
 	tables =  dummy_connect()

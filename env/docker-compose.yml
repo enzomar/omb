@@ -36,7 +36,7 @@ services:
     build: ./docker-file/nginx
     volumes:
       - "./white/log/nginx:/var/log/nginx"
-      - "./white/web:/usr/share/nginx/html:ro"      
+      - "./white/web:/var/www"      
     restart: always
     ports:
       - "8000:8000" 
