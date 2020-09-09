@@ -138,4 +138,5 @@ Contributions are always welcome!
 ## License
 
 [![CC0](https://licensebuttons.net/l/by-nc/3.0/88x31.png)](https://creativecommons.org/licenses/by-nc/4.0/)
+This license lets others remix, adapt, and build upon your work non-commercially, and although their new works must also acknowledge you and be non-commercial, they don’t have to license their derivative works on the same terms.
 [Vincenzo Marafioti]
