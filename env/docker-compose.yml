@@ -27,7 +27,9 @@ services:
       FLASK_DEBUG: 1
       GUN_WORKERS: 2      
     ports:
-      - "5050:5000"  
+      - "5050:5000" 
+    depends_on:
+      - mysql 
 
 
   nginx:
@@ -37,6 +39,8 @@ services:
       - "./white/web:/usr/share/nginx/html:ro"      
     restart: always
     ports:
-      - "8000:8000"    
+      - "8000:8000" 
+    depends_on:
+      - flask    
   
 

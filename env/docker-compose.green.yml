@@ -27,7 +27,7 @@ services:
     volumes:      
       - "./green/web:/usr/share/nginx/html:ro"      
     restart: always     
-    links:
+    depends_on:
       - flask 
     networks:
       - env          
