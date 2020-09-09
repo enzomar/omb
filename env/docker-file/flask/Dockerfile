@@ -23,4 +23,6 @@ RUN pip3 install pymysql==0.10.0
 COPY ./entrypoint.sh /
 COPY ./init_db.py /
 
+
+
 ENTRYPOINT sh /entrypoint.sh $GUN_WORKERS

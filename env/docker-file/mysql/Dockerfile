@@ -9,4 +9,3 @@ ENV TZ=Europe/Amsterdam
 # All scripts in docker-entrypoint-initdb.d/ are automatically
 # executed during container startup
 COPY ./sql/ /docker-entrypoint-initdb.d/
-

@@ -1,6 +1,23 @@
 version: '3.0'
 services:
      
+  mysql:
+    build: ./docker-file/mysql
+    volumes:
+      - "../storage/mysql:/var/lib/mysql"      
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    healthcheck:
+      test: mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD && test '0' -eq $$(ps aux | awk '{print $$11}' | grep -c -e '^mysql$$') 
+      interval: 3s      
+      retries: 5  
+    networks:
+      - webgateway 
+    ports:
+      - "3303:3306" 
+
   flask:
     build: ./docker-file/flask
     volumes:
@@ -13,6 +30,8 @@ services:
       GUN_WORKERS: 2     
     networks:
       - webgateway
+    depends_on:
+      - mysql
 
 
   nginx:
@@ -28,10 +47,10 @@ services:
     volumes:      
       - "./white/web:/usr/share/nginx/html:ro"      
     restart: always     
-    links:
-      - flask 
     networks:
-      - webgateway          
+      - webgateway 
+    depends_on:
+      - flask         
 
   proxy:
     image: traefik:v1.7
@@ -44,23 +63,8 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock
         - ./traefik.toml:/traefik.toml:ro
     networks:
-      - webgateway          
+      - webgateway 
 
-
-  mysql:
-    build: ./docker-file/mysql
-    volumes:
-      - "../storage/mysql:/var/lib/mysql"      
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-    healthcheck:
-      test: mysqladmin ping -h localhost -p$$MYSQL_ROOT_PASSWORD && test '0' -eq $$(ps aux | awk '{print $$11}' | grep -c -e '^mysql$$') 
-      interval: 3s      
-      retries: 5  
-    networks:
-      - webgateway  
 
 networks:
     webgateway:
