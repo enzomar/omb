@@ -11,6 +11,8 @@ if [ $phase = "prd" ]; then
 	docker-compose -p=prd -f env/docker-compose.env.yml down
 	docker-compose -p=prd -f env/docker-compose.env.yml build
 	docker-compose -p=prd -f env/docker-compose.env.yml up -d --remove-orphans
+	docker-compose -p=green -f env/docker-compose.green.yml down
+	docker-compose -p=blue -f env/docker-compose.blue.yml down
 fi
 
 ./dcompose down

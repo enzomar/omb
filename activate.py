@@ -28,6 +28,7 @@ def get_bg_active():
 	if "green" in active:
 		return "green"
 
+
 def get_bg_future():
 	current = get_bg_active()
 	if current == "blue":
