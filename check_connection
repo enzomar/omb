@@ -1,37 +1,62 @@
 #!/bin/bash
 
+phase=$(sh tools/get_phase.sh)
+
+function evaluate {
+	cmd=$1
+	expected=$2
+	actual=$($1)
+	echo $phase" > "${expected}" == "${actual}"="${cmd}
+
+	if [ "${expected}" !=  "${actual}" ]; 
+	then
+		echo "error just above, stopping here..."
+		exit 1
+	fi
+
+}
+
 
 function ccurl {
-	echo -n "> $1 => "
 	echo $(curl -s -o /dev/null -w "%{http_code}" $1)
 }
 
 function ccurlk {
-	echo -n "> $1 (insecure) => "
 	echo $(curl -s -k -o /dev/null -w "%{http_code}" $1)
 }
 
-phase=$(sh tools/get_phase.sh)
-echo "PHASE:"$phase
+function ccurlkl {
+	echo $(curl -s -k -L -o /dev/null -w "%{http_code}" $1)
+}
 
-if [ $phase = "dev" ]; then    	
-	ccurl "http://0.0.0.0:5050"
-	ccurl "http://0.0.0.0:8000"
-	ccurl "http://0.0.0.0:8000/api"
+if [ $phase = "dev" ]; then 
+	evaluate "ccurl http://0.0.0.0:5050" 200
+	evaluate "ccurl http://0.0.0.0:8000" 200
+	evaluate "ccurl http://0.0.0.0:8000/api/health" 200
+	evaluate "ccurl http://0.0.0.0:8000/api/db" 200
+
 fi
 
 
-if [ $phase = "uat" ]; then    	
-	ccurl "http://0.0.0.0:3000"
-	ccurl "http://0.0.0.0:3000/api"
-	ccurl "http://0.0.0.0:3030"
-	ccurlk "https://0.0.0.0:3443"
+if [ $phase = "uat" ]; then  
+	evaluate "ccurl http://0.0.0.0:3000" 200
+	evaluate "ccurl http://0.0.0.0:3000/api/health" 200 
+	evaluate "ccurl http://0.0.0.0:3000/api/db" 200 
+	evaluate "ccurlk https://0.0.0.0:3443" 200 
+	evaluate "ccurl http://0.0.0.0:3443" 400 
+	evaluate "ccurlk https://0.0.0.0:3443/api/health" 200 
+	evaluate "ccurl http://0.0.0.0:3443/api/health" 400 
+	evaluate "ccurl http://0.0.0.0:3030" 302 
 fi
 
 
 if [ $phase = "prd" ]; then    	
-	ccurl "http://0.0.0.0"
-	ccurl "http://0.0.0.0/api"
-	ccurl "https://0.0.0.0:443"
+	evaluate "ccurlk http://0.0.0.0" 302 
+	evaluate "ccurlkl http://0.0.0.0" 200 
+	evaluate "ccurlkl https://0.0.0.0" 200 
+	evaluate "ccurlk http://0.0.0.0/api/health" 302 
+	evaluate "ccurlkl http://0.0.0.0/api/health" 200 
+	evaluate "ccurlk https://0.0.0.0/api/health" 200 
+	evaluate "ccurlkl http://0.0.0.0/api/db" 200 
 fi
 

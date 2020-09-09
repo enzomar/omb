@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 
-function run_all {
+function run {
 	echo "$1 > setup ..."
 	./set_phase $1 > /dev/null 2>&1
 	echo "$1 > initializing ..."
@@ -10,13 +10,22 @@ function run_all {
 	python activate.py > /dev/null 2>&1
 	./up > /dev/null 2>&1
 	./check_connection
+
 	echo "$1 > second activation ..."
 	python activate.py > /dev/null 2>&1
 	./check_connection
 	echo "$1 > tear down ..."
 	./stop > /dev/null 2>&1
+	./tools/dkill > /dev/null 2>&1
 }
 
-run_all dev
-run_all uat
-run_all prd
+if [ -z $1 ]; 
+then
+	run dev
+	run uat
+	run prd	
+else
+	if [ $1 = "dev" ] || [ $1 = "uat" ] || [ $1 = "prd" ] ; then 
+		run $1
+	fi
+fi
