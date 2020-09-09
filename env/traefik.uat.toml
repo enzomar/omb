@@ -1,4 +1,6 @@
 defaultEntryPoints = ["https","http"]
+logLevel = "DEBUG"
+
 
 [accessLog]
 
@@ -9,8 +11,6 @@ address = ":8080"
 [entryPoints]
   [entryPoints.http]
   address = ":80"
-    [entryPoints.http.redirect]
-    entryPoint = "https"
   [entryPoints.https]
   address = ":443"
   [entryPoints.https.tls]
@@ -20,8 +20,9 @@ address = ":8080"
 email = "test@traefik.io"
 storage = "acme.json"
 entryPoint = "https"
-#caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-[acme.tlsChallenge]
+acmeLogging = true
+caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+[acme.httpChallenge]
 
 [retry]
 attempts = 3
