@@ -137,6 +137,5 @@ Contributions are always welcome!
 
 ## License
 
-[![CC0](https://licensebuttons.net/p/zero/1.0/88x31.png)](https://creativecommons.org/publicdomain/zero/1.0/)
-
-To the extent possible under law, [Vincenzo Marafioti] has waived all copyright and related or neighboring rights to this work.
+[![CC0](https://licensebuttons.net/l/by-nc/3.0/88x31.png)](https://creativecommons.org/licenses/by-nc/4.0/)
+[Vincenzo Marafioti]
