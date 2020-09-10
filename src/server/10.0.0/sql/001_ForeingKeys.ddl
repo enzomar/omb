@@ -1,0 +1,172 @@
+USE easycontainer;
+
+DROP procedure IF EXISTS create_fk;
+DELIMITER $$
+CREATE  PROCEDURE create_fk()
+Begin
+
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Keys_Actor' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE ACT_Keys ADD CONSTRAINT FK_Keys_Actor
+  FOREIGN KEY (actor) REFERENCES ACT_Actors (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Balance_from' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE BLC_Balance ADD CONSTRAINT FK_Balance_from
+  FOREIGN KEY (actor) REFERENCES ACT_Actors (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Balance_itam' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE BLC_Balance ADD CONSTRAINT FK_Balance_itam
+  FOREIGN KEY (item) REFERENCES CAT_Items (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Balance_to' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE BLC_Balance ADD CONSTRAINT FK_Balance_to
+  FOREIGN KEY (other) REFERENCES ACT_Actors (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Balance_transaction' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE BLC_Balance ADD CONSTRAINT FK_Balance_transaction
+  FOREIGN KEY (transaction) REFERENCES TRX_Posting (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Catalogues_actor' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE CAT_Catalogues ADD CONSTRAINT FK_Catalogues_actor
+  FOREIGN KEY (actor) REFERENCES ACT_Actors (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Catalogues_item' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE CAT_Catalogues ADD CONSTRAINT FK_Catalogues_item
+  FOREIGN KEY (item) REFERENCES CAT_Items (uuid);
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Items_description' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE CAT_Items ADD CONSTRAINT FK_Items_description
+  FOREIGN KEY (description) REFERENCES Translations (uuid);
+
+END IF;
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Posting_creator' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE TRX_Posting ADD CONSTRAINT FK_Posting_creator
+  FOREIGN KEY (creator) REFERENCES ACT_Actors (uuid)
+END IF;
+
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Posting_creator_sign' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+ALTER TABLE TRX_Posting ADD CONSTRAINT FK_Posting_creator_sign
+  FOREIGN KEY (creator_sign) REFERENCES TRX_Signatures (uuid);
+END IF;
+
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Posting_partner' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+  ALTER TABLE TRX_Posting ADD CONSTRAINT FK_Posting_partner
+  FOREIGN KEY (partner) REFERENCES ACT_Actors (uuid);
+END IF;
+
+
+IF NOT EXISTS (
+    SELECT NULL 
+    FROM information_schema.TABLE_CONSTRAINTS
+    WHERE
+        CONSTRAINT_SCHEMA = DATABASE() AND
+        CONSTRAINT_NAME   = 'FK_Posting_partner_sign' AND
+        CONSTRAINT_TYPE   = 'FOREIGN KEY'
+)
+THEN
+  ALTER TABLE TRX_Posting ADD CONSTRAINT FK_Posting_partner_sign
+  FOREIGN KEY (partner_sign) REFERENCES TRX_Signatures (uuid);
+END IF;
+
+
+END$$
+
+DELIMITER ;
